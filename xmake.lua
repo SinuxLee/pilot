@@ -4,10 +4,10 @@ set_languages("c17", "c++17")
 add_requires("glfw 3.3")
 
 if is_plat("windows") then
-    add_requires("imgui v1.90.1", {configs = {glfw_opengl3 = true}})
+    add_requires("imgui v1.90-docking", {configs = {glfw = true, opengl3 = true}})
     add_requires("spdlog v1.13.0")
 else
-    add_requires("imgui 1.90", {configs = {glfw_opengl3 = true}})
+    add_requires("imgui 1.90-docking", {configs = {glfw = true, opengl3 = true}})
     add_requires("spdlog 1.13")
 end
 
