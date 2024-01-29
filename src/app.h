@@ -1,16 +1,8 @@
-#include "imgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
 #include <stdio.h>
-#if defined(IMGUI_IMPL_OPENGL_ES2)
-#include <GLES2/gl2.h>
-#endif
+
+#include "imgui.h"
 #undef GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
-#if defined(_MSC_VER) && (_MSC_VER >= 1900) &&                                 \
-    !defined(IMGUI_DISABLE_WIN32_FUNCTIONS)
-#pragma comment(lib, "legacy_stdio_definitions")
-#endif
 
 class App {
 public:
@@ -19,6 +11,7 @@ public:
 
   bool init();
   void run();
+  void render();
 
   static void glfwErrorCallback(int error, const char *description) {
     fprintf(stderr, "Glfw Error %d: %s\n", error, description);

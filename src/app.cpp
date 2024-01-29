@@ -1,5 +1,18 @@
 #include "app.h"
 
+#include <string>
+
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
+#if defined(IMGUI_IMPL_OPENGL_ES2)
+#include <GLES2/gl2.h>
+#endif
+
+#if defined(_MSC_VER) && (_MSC_VER >= 1900) &&                                 \
+    !defined(IMGUI_DISABLE_WIN32_FUNCTIONS)
+#pragma comment(lib, "legacy_stdio_definitions")
+#endif
+
 App::~App() {
   ImGui_ImplOpenGL3_Shutdown();
   ImGui_ImplGlfw_Shutdown();
@@ -28,7 +41,7 @@ bool App::init() {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // 3.2+ only
-  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);           // Required on Mac
+  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // Required on Mac
 #else
   // GL 3.0 + GLSL 130
   const char *glsl_version = "#version 130";
@@ -52,8 +65,9 @@ bool App::init() {
   ImGui::CreateContext();
   ImGuiIO &io = ImGui::GetIO();
   io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+  io.FontGlobalScale = 1.2f;
 
-  ImGui::StyleColorsClassic();
+  ImGui::StyleColorsLight();
 
   // Setup Platform/Renderer backends
   ImGui_ImplGlfw_InitForOpenGL(window, true);
@@ -71,46 +85,7 @@ void App::run() {
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
-    // 1. Show the big demo window (Most of the sample code is in
-    // ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear
-    // ImGui!).
-    if (show_demo_window)
-      ImGui::ShowDemoWindow(&show_demo_window);
-
-    // 2. Show a simple window that we create ourselves. We use a Begin/End pair
-    // to created a named window.
-    {
-      static float f = 0.0f;
-      static int counter = 0;
-
-      ImGui::Begin("Hello, world!");
-
-      ImGui::Text("This is some useful text.");
-      ImGui::Checkbox("Demo Window", &show_demo_window);
-      ImGui::Checkbox("Another Window", &show_another_window);
-
-      ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
-      ImGui::ColorEdit3("clear color", reinterpret_cast<float *>(&clear_color));
-
-      if (ImGui::Button("Button"))
-        counter++;
-
-      ImGui::SameLine();
-      ImGui::Text("counter = %d", counter);
-      ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
-                  1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-
-      ImGui::End();
-    }
-
-    // 3. Show another simple window.
-    if (show_another_window) {
-      ImGui::Begin("Another Window", &show_another_window);
-      ImGui::Text("Hello from another window!");
-      if (ImGui::Button("Close Me"))
-        show_another_window = false;
-      ImGui::End();
-    }
+    render();
 
     // Rendering
     ImGui::Render();
@@ -124,4 +99,28 @@ void App::run() {
 
     glfwSwapBuffers(window);
   }
+}
+
+void App::render() {
+  static float f = 0.0f;
+  static int counter = 0;
+
+  ImGui::Begin(std::string(u8"测试界面").c_str());
+
+  ImGui::Text("This is some useful text.");
+  ImGui::Checkbox("Demo Window", &show_demo_window);
+  ImGui::Checkbox("Another Window", &show_another_window);
+
+  ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
+  ImGui::ColorEdit3("clear color", reinterpret_cast<float *>(&clear_color));
+
+  if (ImGui::Button("Button"))
+    counter++;
+
+  ImGui::SameLine();
+  ImGui::Text("counter = %d", counter);
+  ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
+              1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+
+  ImGui::End();
 }
